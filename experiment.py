@@ -2,21 +2,22 @@ import torch
 from torch.utils.data import ConcatDataset, random_split, DataLoader
 import trainer
 from data.sequence_dataset import SequenceDataset
-from hyper_parameters import Parameters
 from sequence_lstm_net import SequenceLSTMNet
+from hyper_parameters import P1Parameters
 
 if __name__ == "__main__":
-    print(f'running on {Parameters.device}')
+    parameters = P1Parameters
+    print(f'running on {parameters.device}')
     neg_file = "data/part_one/neg_examples"
     pos_file = "data/part_one/pos_examples"
-    word_to_index = {char: i for i, char in enumerate(Parameters.vocab)}
+    word_to_index = {char: i for i, char in enumerate(parameters.vocab)}
 
-    neg_dataset = SequenceDataset(neg_file, tag=0, word_to_index=word_to_index)
-    pos_dataset = SequenceDataset(pos_file, tag=1, word_to_index=word_to_index)
+    neg_dataset = SequenceDataset(neg_file, tag=0, word_to_index=word_to_index, parameters=parameters)
+    pos_dataset = SequenceDataset(pos_file, tag=1, word_to_index=word_to_index, parameters=parameters)
     dataset = ConcatDataset([neg_dataset, pos_dataset])
 
     # Split dataset to train and test
-    train_size = int(Parameters.train_split * len(dataset))
+    train_size = int(parameters.train_split * len(dataset))
     test_size = len(dataset) - train_size
     train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
 
@@ -26,16 +27,16 @@ if __name__ == "__main__":
 
     # Initialize SequenceLSTMNet
     model = SequenceLSTMNet(
-        vocab_size=Parameters.indexes_size,
-        embedding_size=Parameters.embedding_dim,
-        hidden_size=Parameters.hidden_size,
-        num_layers=Parameters.lstm_layers,
-        dropout=Parameters.dropout,
-        output_size=Parameters.num_classes
+        vocab_size=parameters.indexes_size,
+        embedding_size=parameters.embedding_dim,
+        hidden_size=parameters.hidden_size,
+        num_layers=parameters.lstm_layers,
+        dropout=parameters.dropout,
+        output_size=parameters.num_classes
     )
-    model = model.to(Parameters.device)  # Move model to GPU if available
+    model = model.to(parameters.device)  # Move model to GPU if available
     loss = torch.nn.BCELoss()  # Binary Cross Entropy Loss
-    optimizer = torch.optim.Adam(model.parameters(), lr=Parameters.lr)
+    optimizer = torch.optim.Adam(model.parameters(), lr=parameters.lr)
 
     trainer.train(
         train_loader=train_dataloader,
@@ -43,6 +44,6 @@ if __name__ == "__main__":
         model=model,
         criterion=loss,
         optimizer=optimizer,
-        device=Parameters.device,
-        epochs=Parameters.epochs
+        device=parameters.device,
+        epochs=parameters.epochs
     )

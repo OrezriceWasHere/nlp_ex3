@@ -1,7 +1,7 @@
 import torch
 
 
-class Parameters:
+class P1Parameters:
     dropout = 0.5
     lstm_layers = 2
     epochs = 50
