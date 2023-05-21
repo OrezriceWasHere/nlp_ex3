@@ -6,7 +6,7 @@ negative_file = "neg_examples"
 NUM_OF_POS_SEQ = 500
 NUM_OF_NEG_SEQ = 500
 
-LENGTH_OF_POS_SEQ = 30
+LENGTH_OF_POS_SEQ = 20
 
 
 def generate_palindrome() -> str:

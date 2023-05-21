@@ -55,11 +55,18 @@ def generate_bad_examples(buffer) -> list[str]:
     bad_examples_buffer = np.random.choice(buffer, size=NUM_OF_NEG_SEQ, replace=False).tolist()
     # choose a random character from the buffer and replace it with a drop it,
     # for every string in the buffer.
-    index_to_drop = [
-        np.random.randint(0, len(string)) for string in bad_examples_buffer
-    ]
-    for index, string in zip(index_to_drop, bad_examples_buffer):
-        bad_examples_buffer[index] = string[:index] + string[index + 1:]
+    for i in range(len(bad_examples_buffer)):
+        string = bad_examples_buffer[i]
+        while sum([1 for char in string if char == 'a']) == sum([1 for char in string if char == 'b']) ** 2:
+            count_indexes_to_replace = np.random.randint(0, len(string))
+            indexes_to_replace = np.random.choice(list(range(len(string))), size=count_indexes_to_replace, replace=False)
+            for index in indexes_to_replace:
+                char = string[index]
+                if char == "a":
+                    bad_examples_buffer[i] = string[:index] + "b" + string[index + 1:]
+                else:
+                    bad_examples_buffer[i] = string[:index] + "a" + string[index + 1:]
+
     return bad_examples_buffer
 
 

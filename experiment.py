@@ -3,13 +3,11 @@ from torch.utils.data import ConcatDataset, random_split, DataLoader
 import trainer
 from data.sequence_dataset import SequenceDataset
 from sequence_lstm_net import SequenceLSTMNet
-from hyper_parameters import P1Parameters
+from hyper_parameters import *
 
-if __name__ == "__main__":
-    parameters = P1Parameters
+
+def experiment(pos_file, neg_file, parameters):
     print(f'running on {parameters.device}')
-    neg_file = "data/part_one/neg_examples"
-    pos_file = "data/part_one/pos_examples"
     word_to_index = {char: i for i, char in enumerate(parameters.vocab)}
 
     neg_dataset = SequenceDataset(neg_file, tag=0, word_to_index=word_to_index, parameters=parameters)
@@ -47,3 +45,48 @@ if __name__ == "__main__":
         device=parameters.device,
         epochs=parameters.epochs
     )
+
+
+def experiment_part_one():
+    parameters = P1Parameters
+    neg_file = "data/part_one/neg_examples"
+    pos_file = "data/part_one/pos_examples"
+    experiment(pos_file, neg_file, parameters)
+
+
+def experiment_part_two_palindrome():
+    parameters = P2PalindromeParameters
+    neg_file = "data/part_two/palindrome/neg_examples"
+    pos_file = "data/part_two/palindrome/pos_examples"
+    experiment(pos_file, neg_file, parameters)
+    # When sequence length is 10, the model is able to learn the palindrome task with sucess rate 0.94.
+    # When seqeunce length is 20, the model is able to learn the palindrome task with sucess rate 0.72.
+
+    # Best results are achieved with 1 LSTM layer and 200 epochs.
+
+def experiment_part_two_power():
+    parameters = P3PowerParameters
+    neg_file = "data/part_two/power/neg_examples"
+    pos_file = "data/part_two/power/pos_examples"
+    experiment(pos_file, neg_file, parameters)
+
+    """
+    I couldn't reach under any configuration something better than a random guess. 
+    The network is not able to learn the power task.
+    That makes sense. 
+    """
+
+def experiment_part_two_z3():
+    parameters = P3Z3Parameters
+    neg_file = "data/part_two/z3/neg_examples"
+    pos_file = "data/part_two/z3/pos_examples"
+    experiment(pos_file, neg_file, parameters)
+    """
+    The network is able to learn the z3 task with 100% success rate.
+    """
+
+
+
+if __name__ == "__main__":
+    experiment_part_one()
+    # experiment_part_two_z3()
