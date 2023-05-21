@@ -7,8 +7,8 @@ from sequence_lstm_net import SequenceLSTMNet
 
 if __name__ == "__main__":
     print(f'running on {Parameters.device}')
-    neg_file = "data/neg_examples"
-    pos_file = "data/pos_examples"
+    neg_file = "data/part_one/neg_examples"
+    pos_file = "data/part_one/pos_examples"
     word_to_index = {char: i for i, char in enumerate(Parameters.vocab)}
 
     neg_dataset = SequenceDataset(neg_file, tag=0, word_to_index=word_to_index)
