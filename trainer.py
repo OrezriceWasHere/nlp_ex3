@@ -7,7 +7,7 @@ from sklearn.metrics import classification_report, confusion_matrix, ConfusionMa
 from matplotlib import pyplot as plt
 
 
-def train(train_loader, test_loader, model, criterion, optimizer, epochs, device, ignore_first=False, name=None):
+def train(train_loader, test_loader, model, criterion, optimizer, epochs, device, name=None):
     # Prepare training
 
     loss_per_epoch = []
@@ -28,9 +28,9 @@ def train(train_loader, test_loader, model, criterion, optimizer, epochs, device
             label = label.to(device)
             pbar.set_description(f"Training epoch {epoch}")
 
-            #input(":(")
+            # input(":(")
             output = model(text)
-            #input()
+            # input()
             loss = criterion(output, label)
             optimizer.zero_grad()
             loss.backward()
@@ -40,7 +40,20 @@ def train(train_loader, test_loader, model, criterion, optimizer, epochs, device
             predictions.extend(output.argmax(dim=1).tolist())
             truths.extend(torch.argmax(label, dim=1).tolist())
         print(f'Train Loss: {total_loss_train / len(train_loader): .3f}')
-        print(classification_report(truths, predictions))
+        # print(classification_report(truths, predictions))
+        print(f'Train accuracy: {len([0 for t, p in zip(truths, predictions) if t == p]) / len(truths)}')
+
+        ratio = len([0 for p in predictions if p == 0]) / len(predictions)
+        if ratio < 0.15:
+            print(f"Too much 1! {ratio}")
+            criterion = torch.nn.BCELoss(torch.tensor((0.75, 0.25)).to(device))
+            criterion = torch.nn.BCELoss(torch.tensor((0.9, 0.1)).to(device))
+        elif ratio > 0.85:
+            print(f"Too much 0! {ratio}")
+            criterion = torch.nn.BCELoss(torch.tensor((0.1, 0.9)).to(device))
+        else:
+            print(f"Back to normality {ratio}")
+            criterion = torch.nn.BCELoss()
 
         predictions = []
         truths = []
@@ -64,14 +77,12 @@ def train(train_loader, test_loader, model, criterion, optimizer, epochs, device
 
         print(f'Test Loss: {total_loss_test / len(test_loader): .3f}')
         loss_per_epoch.append(total_loss_test / len(test_loader))
-        accuracy_per_epoch.append(
-            len([0 for t, p in zip(truths, predictions) if t == p]) / len(truths) if not ignore_first else
-            len([0 for t, p in zip(truths, predictions) if t == p and t != 0]) / len([0 for t in truths if t != 0]))
+        accuracy_per_epoch.append(len([0 for t, p in zip(truths, predictions) if t == p]) / len(truths))
         print(f'Test accuracy: {accuracy_per_epoch[-1]}')
 
-        print(classification_report(truths, predictions))
+        # print(classification_report(truths, predictions))
 
-        if epoch % 20 == 0:
+        if epoch % 20 == 0 and False:
             matrix = confusion_matrix(truths, predictions)
             cm_display = ConfusionMatrixDisplay(confusion_matrix=matrix)
             cm_display.plot()

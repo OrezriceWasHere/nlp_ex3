@@ -3,10 +3,10 @@ import numpy as np
 positive_file = "pos_examples"
 negative_file = "neg_examples"
 
-NUM_OF_POS_SEQ = 500
-NUM_OF_NEG_SEQ = 500
+NUM_OF_POS_SEQ = 5000
+NUM_OF_NEG_SEQ = 5000
 
-LENGTH_OF_POS_SEQ = 20
+LENGTH_OF_POS_SEQ = 1000
 
 
 def generate_palindrome() -> str:
@@ -27,11 +27,21 @@ def is_palindrome(seq: str) -> bool:
 
 
 def generate_non_palindrome() -> str:
-    length = np.random.randint(1, LENGTH_OF_POS_SEQ)
+    length = np.random.randint(1, LENGTH_OF_POS_SEQ / 2)
+    should_add_char_in_middle = np.random.choice([True, False])
     seq = [np.random.choice(list("abcdefghijklmnopqrstuvwxyz")) for _ in range(length)]
-    if is_palindrome(seq):
-        seq = generate_non_palindrome()
-    return "".join(seq)
+    combined_string = "".join(seq + seq[::-1])
+    if should_add_char_in_middle:
+        random_char = np.random.choice(list("abcdefghijklmnopqrstuvwxyz"))
+        combined_string = combined_string[:len(combined_string) // 2] + \
+                          random_char + \
+                          combined_string[len(combined_string) // 2:]
+
+    index_to_destroy = np.random.randint(0, len(combined_string) // 2)
+    combined_string = list(combined_string)
+    combined_string[index_to_destroy] = chr((ord(combined_string[len(combined_string) - index_to_destroy - 1]) - ord('a') + 1) % (ord('z') - ord('a') + 1) + ord('a'))
+
+    return ''.join(combined_string)
 
 
 if __name__ == "__main__":

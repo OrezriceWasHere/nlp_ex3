@@ -64,29 +64,23 @@ def experiment_part_two_palindrome():
 
     # Best results are achieved with 1 LSTM layer and 200 epochs.
 
-def experiment_part_two_power():
-    parameters = P3PowerParameters
-    neg_file = "data/part_two/power/neg_examples"
-    pos_file = "data/part_two/power/pos_examples"
+def experiment_part_two_prime():
+    parameters = P3PrimeParameters
+    neg_file = "data/part_two/prime/neg_examples"
+    pos_file = "data/part_two/prime/pos_examples"
     experiment(pos_file, neg_file, parameters)
 
-    """
-    I couldn't reach under any configuration something better than a random guess. 
-    The network is not able to learn the power task.
-    That makes sense. 
-    """
 
-def experiment_part_two_z3():
+def experiment_part_two_same():
     parameters = P3Z3Parameters
-    neg_file = "data/part_two/z3/neg_examples"
-    pos_file = "data/part_two/z3/pos_examples"
+    neg_file = "data/part_two/same_or_not/neg_examples"
+    pos_file = "data/part_two/same_or_not/pos_examples"
     experiment(pos_file, neg_file, parameters)
     """
     The network is able to learn the z3 task with 100% success rate.
     """
 
 
-
 if __name__ == "__main__":
-    experiment_part_one()
-    # experiment_part_two_z3()
+    #experiment_part_one()
+    experiment_part_two_same()

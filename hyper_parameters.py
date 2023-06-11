@@ -25,15 +25,15 @@ class P2PalindromeParameters(BaseParameters):
     indexes_size = len(vocab)
 
 
-class P3PowerParameters(BaseParameters):
+class P3PrimeParameters(BaseParameters):
     epochs = 300
     embedding_dim = 2
-    vocab = "ab"
+    vocab = "01"
     indexes_size = len(vocab)
 
 
 class P3Z3Parameters(BaseParameters):
     epochs = 300
     embedding_dim = 2
-    vocab = "abcdefghijklmnopqrstuvwxyz"
+    vocab = "01"
     indexes_size = len(vocab)
